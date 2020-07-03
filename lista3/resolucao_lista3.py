@@ -144,30 +144,74 @@ def questao_5():
 
     N=1000000
 
-    def gera_exponencial(lambida):
-        u0=random.random()
-        #aplica a transformada inversa da funcao exponencial
-        #temos como inversa da funcao acumulativa ln(1-u0)/-lambda, porem como 1-u0 também é uma variavel aleatoria entre 0 e 1 uniforme, podemos utilizar apenas u0
-        x=math.log(u0)/-lambida
-        return(x)
-
-    def f():
+    def f(N):
+        #distribuicao uniforme
         return 1/N
 
     def g(x):
         return x*math.log(x)
 
-    def h(x):
-        return st.expon.pdf(x)
+    def h(x,N):
+        K=N*(N+1)/2
+        return x/K
 
-    def importance_sampling(N):
-        samples=[]
+    def calc_segundo_momento():
+        sum=0
         for i in range(N):
-            #sample from h(x)
-            x= gera_exponencial(1)
-            sample=f()*(g(x)/h(x))
+            sum+=(pow(g(i+1), 2)/h(i+1))
+        print("segundo momento = "+ str(sum))
+        return 1
 
-            samples.append(sample)
+    def gera_amostra_h(N):
+        K=N*(N+1)/2
+        # #amostragem feita por reject sampling
+        # while True:
+        #
+        #     z = np.random.uniform(0, N)
+        #
+        #     #valor maximo que h(x) pode assumir eh 2/N=1
+        #     u = np.random.uniform(0, 2/N+1)
+        #
+        #     if u <= h(z, N):
+        #         return z
+
+        #aplicando a transformada inversa , por bhaskara temos:
+        u0=random.random()
+        x=(-1+math.sqrt(1+4*u0*N*(N+1)))/2
+        return x
+
+
+    def Gn(N):
+        sum=0
+        for i in range(N):
+            sum+=(i+1)*math.log(i+1)
+        return sum
+
+    def importance_sampling(n):
+        #samples=[]
+        S=0
+        for i in range(n):
+            #sample from h(x)
+            x= gera_amostra_h(N)
+            #sample=f()*g(x)/h(x)
+            S+=f(N)*g(x)/h(x,N)
+            #samples.append(sample)
+        print("S")
+        print(S*N/n)
+        print("GN")
+        print(Gn(N))
+        #return S/(2*n)
+        return S/n
+
+    #calc_segundo_momento()
+
+    ns=[10, 100, 1000, 10000, 100000, 1000000, 10000000]
+    erros_relativos=[]
+    for n in ns:
+        erros_relativos.append(abs((N*importance_sampling(n))-Gn(N))/Gn(N))
+
+    plt.plot(range(7), erros_relativos, '-r', label='evolucao do erro')
+    plt.show()
 
 def questao_6():
     alphas=[1,2,3]
@@ -257,10 +301,10 @@ def questao_7():
     tempo=final-inicial
     print(tempo)
 
-questao_1()
-questao_2()
-questao_3()
-questao_4()
+#questao_1()
+#questao_2()
+#questao_3()
+#questao_4()
 questao_5()
-questao_6()
-questao_7()
+#questao_6()
+#questao_7()
