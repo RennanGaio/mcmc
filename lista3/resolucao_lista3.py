@@ -164,16 +164,6 @@ def questao_5():
 
     def gera_amostra_h(N):
         K=N*(N+1)/2
-        # #amostragem feita por reject sampling
-        # while True:
-        #
-        #     z = np.random.uniform(0, N)
-        #
-        #     #valor maximo que h(x) pode assumir eh 2/N=1
-        #     u = np.random.uniform(0, 2/N+1)
-        #
-        #     if u <= h(z, N):
-        #         return z
 
         #aplicando a transformada inversa , por bhaskara temos:
         u0=random.random()
@@ -203,7 +193,7 @@ def questao_5():
         #return S/(2*n)
         return S/n
 
-    #calc_segundo_momento()
+    calc_segundo_momento()
 
     ns=[10, 100, 1000, 10000, 100000, 1000000, 10000000]
     erros_relativos=[]
